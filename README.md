@@ -40,9 +40,6 @@ Este es un proyecto del clásico juego **Buscaminas**, desarrollado con HTML, CS
 
 ## 🧑‍💻 Autor
 
-**Aylén Rodríguez**  
-[GitHub](https://github.com/aylenrodriguez) *(modificá el link si usás otro usuario)*
-
----
+**Aylén Rodríguez**  - FullStack Developer
 
 ¡Gracias por jugar! 🎉
