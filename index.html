@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>💣 Buscaminas</title>
+</head>
+<body>
+    <main>
+        <header>
+            <h1>Buscaminas</h1>
+        </header>
+    <form id="formulario" action="">
+        <input type="text" name="cantidadMinas" id="cantMinas" placeholder="Cantidad de Minas" value="10">
+        <select name="tipoTablero" id="tipoTablero">
+            <option value="tablero10">10x10</option>
+            <option value="tablero15">15x15</option>
+            <option value="tablero20">20x20</option>
+            <option value="tablero25">25x25</option>
+            <option value="tablero30">30x30</option>
+        </select>
+        <select name="cronometro" id="cronometro">
+            <option value="cronometro">Cronómetro</option>
+            <option value="cronometroDesactivado">Cronómetro Desactivado</option>
+        </select>
+        <button id="btnIniciar">Iniciar</button>
+        <button id="btnReiniciar" disabled>Reiniciar</button>
+    </forms>
+    <div id="tablero">
+        <table id="tableroJuego">
+            <tbody id="tableroBody">
+            </tbody>
+        </table>
+    </div>
+    <div id="resultado">
+
+    </div>
+    <div id="cronometro"></div>
+    <div id="minasRestantes"></div>
+
+    <footer>
+        <p>Portafolio -Aylen Rodriguez - FullStack developer</p>    
+    </footer>
+    </main>
+    <script src="./script.js"></script>
+</body>
+</html>

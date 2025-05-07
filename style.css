@@ -1,0 +1,84 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+#formulario {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+#formulario form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+#formulario form input[type="text"]{
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+button{
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#tablero{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+#tableroJuego {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 10px;
+}
+#tableroJuego div {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+#tableroJuego div:hover {
+    background-color: #e0e0e0;
+}
+#tableroJuego div:hover:active {
+    background-color: #ccc;
+}
+#tableroBody {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
