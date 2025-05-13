@@ -97,6 +97,7 @@ function revealAllMines() {
     for (let c = 0; c < cols; c++) {
       if (board[r][c].mine) {
         board[r][c].element.classList.add('mine');
+        board[r][c].element.style.background = 'red';
         board[r][c].element.textContent = '💣';
       }
     }
