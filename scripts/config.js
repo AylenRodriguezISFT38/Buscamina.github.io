@@ -1,3 +1,4 @@
+'use strict';
 // configs popup
 var configs = document.getElementsByClassName("configs")[0];
 var popup = document.getElementById("popup");

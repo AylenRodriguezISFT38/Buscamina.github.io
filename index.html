@@ -1,68 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/normalize.css">
-    <link rel="stylesheet" href="./css/style.css">
-    <title>🧨 Mineswipper</title>
+    <title>Minesweeper</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="header">
-        <h1>🧨 Mineswipper</h1>
-        <nav class="nav-list">
-            <ul>
-                <li class="replay">Reiniciar</li>
-                <li class="configs">Configuraciones</li>
-            </ul>
-        </nav>
-    </header>
 
-    <section class="status-bar">
-        <div class="status-item">
-            <span class="status-label">🧨 Minas restantes:</span>
-            <span class="status-value" id="mines-remaining">10</span>
-        </div>
-        <div class="status-item">
-            <span class="status-label">🕕 Tiempo:</span>
-            <span class="status-value" id="timer">00:00</span>
-        </div>
-    </section>
-    <section class="game-container">
-        <p class="face" id="face">😀</p>
-        <div class="game-grid">
-            <!-- Aquí se generará la cuadrícula del juego -->
-        </div>
-    </section>
-
-    <div class="pop-up-configs" id="popup">    
-        <div class="pop-up-content">
-            <span class="close-btn">&times;</span>
-            <audio id="soundOpen" src="sounds/open-popup.mp3" preload="auto"></audio>
-            <audio id="soundClose" src="sounds/close.mp3" preload="auto"></audio>
-            <h2>Configuraciones</h2>
-            <form id="config-form">
-                <label for="rows">Filas:</label>
-                <input type="number" id="rows" name="rows" min="5" max="30" value="8" required>
-                
-                <label for="cols">Columnas:</label>
-                <input type="number" id="cols" name="cols" min="5" max="30" value="8" required>
-                
-                <label for="mines">Minas:</label>
-                <input type="number" id="mines" name="mines" min="1" max="200" value="10" required>
-                <div class="separator">
-                    <label for="timer-config">Time:</label>
-                    <input type="text" id="timer-config" name="timer-config" value="00:00" disabled>
-                    <label for="enable-timer">Temporizador</label>
-                    <input type="checkbox" id="enable-timer" name="enable-timer" unchecked> 
-                </div>
-                <button type="submit" class="btn-config" id="save-configs">Guardar</button>
-            </form>
+    <div id="nameModal" class="modal">
+        <div class="modal-content">
+            <h2>Ingresá tu nombre</h2>
+            <input type="text" id="playerName" placeholder="Tu nombre...">
+            <p id="nameError" class="error"></p>
+            <button id="startGameBtn">Comenzar</button>
         </div>
     </div>
-    
-    <script src="./Scripts/configurations.js"></script>
-    <script src="./Scripts/game.js"></script>
 
+    <header class="header">
+        <h1>Minesweeper</h1>
+        <div class="info-bar">
+            <span>Minas: <span id="mineCount">10</span></span>
+            <span>Tiempo: <span id="timer">00:00</span></span>
+            <button id="restartBtn">Reiniciar</button>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div id="gameGrid" class="game-grid"></div>
+    </main>
+
+<script src="scripts/game.js"></script>
 </body>
 </html>
