@@ -1,93 +1,174 @@
+/* ============================================
+   ESTILO GENERAL
+============================================ */
 body {
-    background: #222;
-    color: #eee;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #1f1f1f;
+  color: #eaeaea;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
-.header {
-    margin-top: 20px;
-    text-align: center;
+.header { 
+  width: 100%; 
+  max-width: 900px; 
+  padding: 18px 12px; 
 }
 
-.info-bar {
-    margin-top: 10px;
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    font-size: 18px;
-    align-items: center;
+.title { text-align: center; margin-bottom: 8px; }
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2a2a2a;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #3d3d3d;
 }
 
-button {
-    padding: 5px 10px;
-    cursor: pointer;
+.counter, .timer { font-weight: 600; }
+
+.btn {
+  background: #3b6df0;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn:active { transform: translateY(1px); }
+
+.main { 
+  width: 100%; 
+  max-width: 900px; 
+  display: flex; 
+  justify-content: center; 
+  margin-top: 24px; 
 }
 
-.game-container {
-    margin-top: 40px;
+/* ============================================
+   TABLERO
+============================================ */
+.board-wrapper {
+  background: #2a2a2a;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #3d3d3d;
+  display: inline-block;
 }
 
-.game-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 40px);
-    grid-template-rows: repeat(8, 40px);
-    gap: 2px;
+.row {
+  display: flex;
+  gap: 4px; /* valor final: prolijo, consistente */
+  justify-content: center;
 }
 
+/* CELDAS */
 .cell {
-    width: 40px;
-    height: 40px;
-    background: #444;
-    border: 1px solid #666;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    cursor: pointer;
-    user-select: none;
+  width: 38px;
+  height: 38px;
+  background: #414141;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #eee;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid #505050;
+  font-size: 18px;
+  box-sizing: border-box;
 }
+
+.cell:hover { filter: brightness(1.08); }
 
 .cell.revealed {
-    background: #777;
-    cursor: default;
+  background: #dcdcdc;
+  color: #222;
+  cursor: default;
+  border: 1px solid #bdbdbd;
 }
 
-.cell.flag {
-    background: #c00;
+.cell.flagged {
+  background: #7b2b2b;
+  color: #fff;
 }
 
+/* ============================================
+   CELDA DE MINA EXPLOTADA (BLAST)
+============================================ */
+.cell.blast {
+  background: #8b0000 !important;
+  border-color: #ff4444 !important;
+  color: transparent !important;
+}
+
+/* icono blast */
+.cell.blast img {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+/* iconos normales */
+.cell img {
+  width: 22px;
+  height: 22px;
+  display: block;
+  pointer-events: none;
+}
+
+/* ============================================
+   MODALES
+============================================ */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.75);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(10,10,10,0.65);
+}
+.modal.hidden { display: none; }
+
+.modal-card {
+  background: #272727;
+  padding: 18px;
+  border-radius: 8px;
+  width: 320px;
+  border: 1px solid #3d3d3d;
+  text-align: center;
 }
 
-.modal-content {
-    background: #333;
-    padding: 20px;
-    border-radius: 4px;
-    text-align: center;
-    width: 300px;
+.modal-card input {
+  width: 90%;
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1b1b1b;
+  color: #fff;
 }
 
-.modal-content input {
-    width: 90%;
-    padding: 8px;
-    margin-top: 10px;
+.modal-actions { 
+  margin-top: 12px; 
+  display:flex; 
+  gap:8px; 
+  justify-content:center; 
 }
 
-.error {
-    color: red;
-    font-size: 14px;
-    height: 20px;
+.error { 
+  color: #ff7b7b; 
+  height: 18px; 
+  margin-top: 8px; 
+  font-size: 14px; 
 }
+
+.big-icon { width: 80px; margin-bottom: 10px; }
+
+#face-icon { width: 32px; height: 32px; }

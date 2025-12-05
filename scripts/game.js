@@ -1,244 +1,320 @@
 'use strict';
 
-var CONFIG = (function () {
-  return {
-    difficulty: {
-      easy:   { rows: 8,  cols: 8,  mines: 10 },
-      medium: { rows: 12, cols: 12, mines: 25 },
-      hard:   { rows: 16, cols: 16, mines: 40 }
-    },
-    defaultDifficulty: 'easy',
-    cellSizePx: 40,
-    soundsEnabled: true,
-    storageKey: 'minesweeper_results_v1'
-  };
-}());
+/* ===========================
+   VARIABLES GLOBALES
+=========================== */
+var rows = CONFIG.rows;
+var cols = CONFIG.cols;
+var totalMines = CONFIG.mines;
 
-// variables del juego
-var rows = 8;
-var cols = 8;
-var totalMines = 10;
-var grid = [];
-var revealedCount = 0;
+var board = [];
+var firstClick = false;
+var gameOver = false;
 var flagsPlaced = 0;
-var gameStarted = false;
-var timerInterval = null;
-var secondsPassed = 0;
+var timer = 0;
+var interval = null;
 
-var gridElement = document.getElementById("gameGrid");
-var mineCountElement = document.getElementById("mineCount");
-var timerElement = document.getElementById("timer");
-var restartBtn = document.getElementById("restartBtn");
+/* ===========================
+   INICIALIZAR
+=========================== */
+window.onload = function () {
+  UI.showNameModal();
 
-// modal
-var modal = document.getElementById("nameModal");
-var startBtn = document.getElementById("startGameBtn");
-var playerNameInput = document.getElementById("playerName");
-var nameError = document.getElementById("nameError");
-
-modal.style.display = "flex";
-
-// validar nombre
-startBtn.onclick = function () {
-    var name = playerNameInput.value.trim();
-    if (name.length < 3) {
-        nameError.innerHTML = "Mínimo 3 letras";
-        return;
-    }
-    modal.style.display = "none";
-    initGame();
+  document.getElementById("start-btn").onclick = startGame;
+  document.getElementById("result-ok").onclick = UI.hideResultModal;
+  document.getElementById("result-restart").onclick = restart;
+  document.getElementById("reset-btn").onclick = restart;
 };
 
-restartBtn.onclick = function () {
-    resetGame();
-};
+/* ===========================
+   EMPEZAR JUEGO
+=========================== */
+function startGame() {
+  var name = document.getElementById("player-name").value;
+  var error = document.getElementById("name-error");
 
-function resetGame() {
-    stopTimer();
-    secondsPassed = 0;
-    timerElement.innerHTML = "00:00";
-    revealedCount = 0;
-    flagsPlaced = 0;
-    gameStarted = false;
-    initGame();
+  if (!isValidPlayerName(name)) {
+    error.textContent = "Nombre inválido (mínimo 3 letras)";
+    return;
+  }
+
+  savePlayerToStorage(name);
+  error.textContent = "";
+  UI.hideNameModal();
+
+  restart();
 }
 
-function initGame() {
-    grid = [];
-    gridElement.innerHTML = "";
-    mineCountElement.innerHTML = totalMines;
+function restart() {
+  clearInterval(interval);
+  timer = 0;
+  UI.setTimerText(0);
 
-    // creacion matriz
-    for (var r = 0; r < rows; r++) {
-        grid[r] = [];
-        for (var c = 0; c < cols; c++) {
-            var cell = {
-                row: r,
-                col: c,
-                mine: false,
-                revealed: false,
-                flag: false,
-                element: null
-            };
-            grid[r][c] = cell;
+  firstClick = false;
+  gameOver = false;
+  flagsPlaced = 0;
+  UI.setMinesRemaining(totalMines);
+
+  UI.setFace("happy");
+
+  buildEmptyBoard();
+  printBoard();
+}
+
+/* ===========================
+   CREAR TABLERO VACÍO
+=========================== */
+function buildEmptyBoard() {
+  board = [];
+
+  for (var r = 0; r < rows; r++) {
+    var row = [];
+    for (var c = 0; c < cols; c++) {
+      row.push({
+        mine: false,
+        revealed: false,
+        flagged: false,
+        adjacent: 0
+      });
+    }
+    board.push(row);
+  }
+}
+
+/* ===========================
+   COLOCAR MINAS
+=========================== */
+function placeMines(firstR, firstC) {
+  var placed = 0;
+
+  while (placed < totalMines) {
+    var r = randInt(rows);
+    var c = randInt(cols);
+
+    if ((r === firstR && c === firstC) || board[r][c].mine) continue;
+
+    board[r][c].mine = true;
+    placed++;
+  }
+
+  countAdjacentNumbers();
+}
+
+/* ===========================
+   CONTAR NÚMEROS
+=========================== */
+function countAdjacentNumbers() {
+  var dr = [-1, -1, -1, 0, 0, 1, 1, 1];
+  var dc = [-1, 0, 1, -1, 1, -1, 0, 1];
+
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+
+      if (board[r][c].mine) continue;
+
+      var count = 0;
+
+      for (var i = 0; i < 8; i++) {
+        var rr = r + dr[i];
+        var cc = c + dc[i];
+
+        if (isInside(rr, cc, rows, cols) && board[rr][cc].mine) {
+          count++;
         }
+      }
+
+      board[r][c].adjacent = count;
+    }
+  }
+}
+
+/* ===========================
+   IMPRIMIR TABLERO
+=========================== */
+function printBoard() {
+  var wrapper = document.getElementById("board-wrapper");
+  wrapper.innerHTML = "";
+
+  for (var r = 0; r < rows; r++) {
+    var rowDiv = document.createElement("div");
+    rowDiv.className = "row";
+
+    for (var c = 0; c < cols; c++) {
+      var cell = document.createElement("div");
+      cell.className = "cell";
+      cell.id = "cell-" + r + "-" + c;
+
+      attachCellEvents(cell, r, c);
+      rowDiv.appendChild(cell);
     }
 
-    placeMines();
-    drawGrid();
+    wrapper.appendChild(rowDiv);
+  }
 }
 
-// minas random
-function placeMines() {
-    var placed = 0;
-    while (placed < totalMines) {
-        var r = Math.floor(Math.random() * rows);
-        var c = Math.floor(Math.random() * cols);
-        if (!grid[r][c].mine) {
-            grid[r][c].mine = true;
-            placed++;
-        }
+/* ===========================
+   EVENTOS (CLICK IZQ / DER)
+=========================== */
+function attachCellEvents(cell, r, c) {
+
+  // CLICK IZQUIERDO
+  cell.addEventListener("click", function () {
+    if (gameOver) return;
+
+    // primer click
+    if (!firstClick) {
+      firstClick = true;
+      placeMines(r, c);
+
+      interval = setInterval(function () {
+        timer++;
+        UI.setTimerText(timer);
+      }, 1000);
     }
+
+    reveal(r, c);
+  });
+
+  // CLICK DERECHO = BANDERA
+  cell.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+    if (gameOver) return;
+
+    toggleFlag(r, c);
+    return false;
+  });
 }
 
-// tablero
-function drawGrid() {
-    for (var r = 0; r < rows; r++) {
-        for (var c = 0; c < cols; c++) {
-            var div = document.createElement("div");
-            div.className = "cell";
-            div.dataset.row = r;
-            div.dataset.col = c;
-
-            // click izquierdo
-            div.onclick = function () {
-                var r = this.dataset.row;
-                var c = this.dataset.col;
-                revealCell(parseInt(r), parseInt(c));
-            };
-
-            // click derecho
-            div.oncontextmenu = function (e) {
-                e.preventDefault();
-                var r = this.dataset.row;
-                var c = this.dataset.col;
-                toggleFlag(parseInt(r), parseInt(c));
-            };
-
-            grid[r][c].element = div;
-            gridElement.appendChild(div);
-        }
-    }
-}
-
+/* ===========================
+   BANDERAS
+=========================== */
 function toggleFlag(r, c) {
-    var cell = grid[r][c];
+  var cell = board[r][c];
+  var div = document.getElementById("cell-" + r + "-" + c);
 
-    if (cell.revealed) return;
+  if (cell.revealed) return;
 
-    if (!cell.flag) {
-        cell.flag = true;
-        cell.element.classList.add("flag");
-        cell.element.innerHTML = "🚩";
-        flagsPlaced++;
-    } else {
-        cell.flag = false;
-        cell.element.classList.remove("flag");
-        cell.element.innerHTML = "";
-        flagsPlaced--;
-    }
+  if (cell.flagged) {
+    cell.flagged = false;
+    flagsPlaced--;
+    div.innerHTML = "";
+  } else {
+    if (flagsPlaced >= totalMines) return;
+    cell.flagged = true;
+    flagsPlaced++;
 
-    mineCountElement.innerHTML = totalMines - flagsPlaced;
+    var img = document.createElement("img");
+    img.src = CONFIG.icons.flag;
+    div.innerHTML = "";
+    div.appendChild(img);
+  }
+
+  UI.setMinesRemaining(totalMines - flagsPlaced);
 }
 
-function revealCell(r, c) {
-    var cell = grid[r][c];
+/* ===========================
+   REVELAR CELDA
+=========================== */
+function reveal(r, c) {
+  var cell = board[r][c];
+  var div = document.getElementById("cell-" + r + "-" + c);
 
-    if (cell.revealed || cell.flag) return;
+  if (cell.revealed || cell.flagged) return;
 
-    if (!gameStarted) {
-        startTimer();
-        gameStarted = true;
-    }
+  cell.revealed = true;
+  div.classList.add("revealed");
 
-    cell.revealed = true;
-    cell.element.classList.add("revealed");
+  // MINE?
+  if (cell.mine) {
+    lose(r, c);
+    return;
+  }
 
-    if (cell.mine) {
-        cell.element.innerHTML = "💣";
-        lose();
-        return;
-    }
+  // NUMERO
+  if (cell.adjacent > 0) {
+    div.textContent = cell.adjacent;
+    return;
+  }
 
-    var mines = countMines(r, c);
-    if (mines > 0) {
-        cell.element.innerHTML = mines;
-    }
-
-    revealedCount++;
-
-    if (mines === 0) {
-        revealEmptyNeighbors(r, c);
-    }
-
-    if (revealedCount === rows * cols - totalMines) {
-        win();
-    }
+  // VACIO → EXPANDIR
+  expand(r, c);
 }
 
-function countMines(r, c) {
-    var total = 0;
-    for (var dr = -1; dr <= 1; dr++) {
-        for (var dc = -1; dc <= 1; dc++) {
-            var nr = r + dr;
-            var nc = c + dc;
-            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-                if (grid[nr][nc].mine) total++;
-            }
-        }
+/* ===========================
+   EXPANDIR VOID
+=========================== */
+function expand(r, c) {
+  var dr = [-1, -1, -1, 0, 0, 1, 1, 1];
+  var dc = [-1, 0, 1, -1, 1, -1, 0, 1];
+
+  for (var i = 0; i < 8; i++) {
+    var rr = r + dr[i];
+    var cc = c + dc[i];
+
+    if (isInside(rr, cc, rows, cols) && !board[rr][cc].revealed) {
+      reveal(rr, cc);
     }
-    return total;
+  }
 }
 
-function revealEmptyNeighbors(r, c) {
-    for (var dr = -1; dr <= 1; dr++) {
-        for (var dc = -1; dc <= 1; dc++) {
-            var nr = r + dr;
-            var nc = c + dc;
-            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-                if (!grid[nr][nc].revealed && !grid[nr][nc].mine) {
-                    revealCell(nr, nc);
-                }
-            }
-        }
+/* ===========================
+   PERDER
+=========================== */
+function lose(explodeR, explodeC) {
+  gameOver = true;
+  clearInterval(interval);
+
+  UI.setFace("dead");
+
+  // mostrar minas
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+
+      var cell = board[r][c];
+      var div = document.getElementById("cell-" + r + "-" + c);
+
+      if (cell.mine) {
+        div.innerHTML = "";
+        var img = document.createElement("img");
+        img.src = CONFIG.icons.mine;
+        div.appendChild(img);
+      }
     }
+  }
+
+  // celda que explotó
+  var blastDiv = document.getElementById("cell-" + explodeR + "-" + explodeC);
+  blastDiv.innerHTML = "";
+  blastDiv.classList.add("blast");
+
+  var bimg = document.createElement("img");
+  bimg.src = CONFIG.icons.blast;
+  blastDiv.appendChild(bimg);
+
+  UI.showResultModal("Perdiste :(", "Intentá de nuevo", false);
 }
 
-function startTimer() {
-    timerInterval = setInterval(function () {
-        secondsPassed++;
-        updateTimer();
-    }, 1000);
-}
+/* ===========================
+   GANAR
+=========================== */
+function checkWin() {
+  var revealed = 0;
 
-function updateTimer() {
-    var min = Math.floor(secondsPassed / 60);
-    var sec = secondsPassed % 60;
-    timerElement.innerHTML =
-        (min < 10 ? "0" + min : min) + ":" +
-        (sec < 10 ? "0" + sec : sec);
-}
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+      if (!board[r][c].mine && board[r][c].revealed) revealed++;
+    }
+  }
 
-function stopTimer() {
-    clearInterval(timerInterval);
+  if (revealed === rows * cols - totalMines) {
+    win();
+  }
 }
 
 function win() {
-    stopTimer();
-    alert("¡Ganaste!");
-}
+  gameOver = true;
+  clearInterval(interval);
 
-function lose() {
-    stopTimer();
-    alert("Perdiste 😢");
+  UI.setFace("happy");
+  UI.showResultModal("¡Ganaste!", "Buen trabajo", true);
 }

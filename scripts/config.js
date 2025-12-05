@@ -1,30 +1,18 @@
 'use strict';
-// configs popup
-var configs = document.getElementsByClassName("configs")[0];
-var popup = document.getElementById("popup");
-var closeBtn = document.getElementsByClassName("close-btn")[0];
-var soundOpen = document.getElementById("soundOpen");
-var saveConfig = document.getElementById("saveConfig");
-
-closeBtn.addEventListener("click", function() {
-    soundOpen.currentTime = 0; 
-    soundOpen.play();
-    popup.style.visibility = "hidden";
-    popup.classList.remove("show");
-});
-
-configs.addEventListener("click", function() {
-    soundOpen.currentTime = 0; 
-    soundOpen.play();
-    popup.style.visibility = "visible";
-    popup.classList.add("show");
-});
-
-saveConfig.addEventListener("click", function(e) {
-    e.preventDefault();
-    popup.style.visibility = "hidden";
-    popup.classList.remove("show");
-});
-
-// validaciones
-var validateInputs = document.getElementById("config-form");
+var CONFIG = (function () {
+  return {
+    rows: 8,
+    cols: 8,
+    mines: 10,
+    icons: {
+      flag: 'icons/red-flag.png',      // Si tu nombre es flag.png, cambialo
+      mine: 'icons/bomb.png',
+      blast: 'icons/blast.png',
+      face_happy: 'icons/happiness.png',
+      face_surprised: 'icons/surprised.png',
+      face_dead: 'icons/dead.png',
+      id_card: 'icons/id-card.png',
+      crane: 'icons/crane.png'
+    }
+  };
+}());

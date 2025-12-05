@@ -1,36 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minesweeper</title>
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Buscaminas</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-    <div id="nameModal" class="modal">
-        <div class="modal-content">
-            <h2>Ingresá tu nombre</h2>
-            <input type="text" id="playerName" placeholder="Tu nombre...">
-            <p id="nameError" class="error"></p>
-            <button id="startGameBtn">Comenzar</button>
-        </div>
+  <header class="header">
+    <h1 class="title">Buscaminas</h1>
+    <div class="top-bar">
+      <div class="counter">Minas: <span id="mines-remaining">10</span></div>
+
+      <button id="reset-btn" class="btn" title="Reiniciar (cara)">
+        <img id="face-icon" src="icons/happiness.png" alt="face" />
+      </button>
+
+      <div class="timer">Tiempo: <span id="timer">00:00</span></div>
     </div>
+  </header>
 
-    <header class="header">
-        <h1>Minesweeper</h1>
-        <div class="info-bar">
-            <span>Minas: <span id="mineCount">10</span></span>
-            <span>Tiempo: <span id="timer">00:00</span></span>
-            <button id="restartBtn">Reiniciar</button>
-        </div>
-    </header>
+  <main class="main">
+    <section id="board-wrapper" class="board-wrapper"></section>
+  </main>
 
-    <main class="game-container">
-        <div id="gameGrid" class="game-grid"></div>
-    </main>
+  <!-- Modal pedir nombre -->
+  <div id="name-modal" class="modal">
+    <div class="modal-card">
+      <img src="icons/id-card.png" class="big-icon" alt="id">
+      <h2>Ingresá tu nombre</h2>
+      <input id="player-name" type="text" placeholder="mínimo 3 letras" />
+      <p id="name-error" class="error"></p>
+      <div class="modal-actions">
+        <button id="start-btn" class="btn">Comenzar</button>
+      </div>
+    </div>
+  </div>
 
-<script src="scripts/game.js"></script>
+  <!-- Modal resultado -->
+  <div id="result-modal" class="modal hidden">
+    <div class="modal-card">
+      <img id="result-icon" src="icons/crane.png" class="big-icon" alt="result">
+      <h2 id="result-title">Resultado</h2>
+      <p id="result-message"></p>
+      <div class="modal-actions">
+        <button id="result-ok" class="btn">Aceptar</button>
+        <button id="result-restart" class="btn">Jugar otra</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts (modular) -->
+  <script src="scripts/config.js"></script>
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/storage.js"></script>
+  <script src="scripts/validation.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/game.js"></script>
 </body>
 </html>
