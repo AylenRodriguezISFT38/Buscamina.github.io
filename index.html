@@ -10,14 +10,20 @@
 
   <header class="header">
     <h1 class="title">Buscaminas</h1>
-    <div class="top-bar">
-      <div class="counter">Minas: <span id="mines-remaining">10</span></div>
 
-      <button id="reset-btn" class="btn" title="Reiniciar (cara)">
+    <div class="top-bar">
+      <div class="counter">
+        <img src="icons/bomb.png" height="20" alt="mine" />
+        Minas: <span id="mines-remaining">10</span></div>
+
+      <button id="reset-btn" class="btn">
         <img id="face-icon" src="icons/happiness.png" alt="face" />
       </button>
 
-      <div class="timer">Tiempo: <span id="timer">00:00</span></div>
+      <div class="timer">
+        
+        <img src="icons/clock.png" height="20" alt="mine" />
+        Tiempo: <span id="timer">00:00</span></div>
     </div>
   </header>
 
@@ -25,7 +31,6 @@
     <section id="board-wrapper" class="board-wrapper"></section>
   </main>
 
-  <!-- Modal pedir nombre -->
   <div id="name-modal" class="modal">
     <div class="modal-card">
       <img src="icons/id-card.png" class="big-icon" alt="id">
@@ -38,7 +43,6 @@
     </div>
   </div>
 
-  <!-- Modal resultado -->
   <div id="result-modal" class="modal hidden">
     <div class="modal-card">
       <img id="result-icon" src="icons/crane.png" class="big-icon" alt="result">
@@ -51,7 +55,6 @@
     </div>
   </div>
 
-  <!-- Scripts (modular) -->
   <script src="scripts/config.js"></script>
   <script src="scripts/utils.js"></script>
   <script src="scripts/storage.js"></script>

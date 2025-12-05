@@ -1,7 +1,7 @@
-'use strict';
-function savePlayerToStorage(name) {
-  try { localStorage.setItem('ms-player', String(name)); } catch (e) { /* ignore */ }
+function saveName(name) {
+  localStorage.setItem("playerName", name);
 }
-function loadPlayerFromStorage() {
-  try { return localStorage.getItem('ms-player') || ''; } catch (e) { return ''; }
+
+function loadName() {
+  return localStorage.getItem("playerName") || "";
 }

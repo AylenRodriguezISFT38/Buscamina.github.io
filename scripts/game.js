@@ -1,320 +1,246 @@
-'use strict';
-
-/* ===========================
-   VARIABLES GLOBALES
-=========================== */
-var rows = CONFIG.rows;
-var cols = CONFIG.cols;
-var totalMines = CONFIG.mines;
-
 var board = [];
-var firstClick = false;
+var revealed = [];
+var flagged = [];
+var minesPositions = [];
+var timerInterval = null;
+var time = 0;
 var gameOver = false;
-var flagsPlaced = 0;
-var timer = 0;
-var interval = null;
 
-/* ===========================
-   INICIALIZAR
-=========================== */
-window.onload = function () {
-  UI.showNameModal();
+var boardWrapper = document.getElementById("board-wrapper");
+var timerEl = document.getElementById("timer");
+var minesRemainingEl = document.getElementById("mines-remaining");
 
-  document.getElementById("start-btn").onclick = startGame;
-  document.getElementById("result-ok").onclick = UI.hideResultModal;
-  document.getElementById("result-restart").onclick = restart;
-  document.getElementById("reset-btn").onclick = restart;
-};
-
-/* ===========================
-   EMPEZAR JUEGO
-=========================== */
-function startGame() {
-  var name = document.getElementById("player-name").value;
-  var error = document.getElementById("name-error");
-
-  if (!isValidPlayerName(name)) {
-    error.textContent = "Nombre inválido (mínimo 3 letras)";
-    return;
-  }
-
-  savePlayerToStorage(name);
-  error.textContent = "";
-  UI.hideNameModal();
-
-  restart();
-}
-
-function restart() {
-  clearInterval(interval);
-  timer = 0;
-  UI.setTimerText(0);
-
-  firstClick = false;
+function init() {
   gameOver = false;
-  flagsPlaced = 0;
-  UI.setMinesRemaining(totalMines);
+  time = 0;
+  updateTimer();
+  clearInterval(timerInterval);
 
-  UI.setFace("happy");
+  setFaceHappy();
 
-  buildEmptyBoard();
-  printBoard();
+  createArrays();
+  placeMines();
+  renderBoard();
 }
 
-/* ===========================
-   CREAR TABLERO VACÍO
-=========================== */
-function buildEmptyBoard() {
+function createArrays() {
   board = [];
+  revealed = [];
+  flagged = [];
+  minesPositions = [];
 
-  for (var r = 0; r < rows; r++) {
-    var row = [];
-    for (var c = 0; c < cols; c++) {
-      row.push({
-        mine: false,
-        revealed: false,
-        flagged: false,
-        adjacent: 0
-      });
+  var r, c;
+  for (r = 0; r < ROWS; r++) {
+    board[r] = [];
+    revealed[r] = [];
+    flagged[r] = [];
+    for (c = 0; c < COLS; c++) {
+      board[r][c] = 0;
+      revealed[r][c] = false;
+      flagged[r][c] = false;
     }
-    board.push(row);
   }
 }
 
-/* ===========================
-   COLOCAR MINAS
-=========================== */
-function placeMines(firstR, firstC) {
+function placeMines() {
   var placed = 0;
-
-  while (placed < totalMines) {
-    var r = randInt(rows);
-    var c = randInt(cols);
-
-    if ((r === firstR && c === firstC) || board[r][c].mine) continue;
-
-    board[r][c].mine = true;
-    placed++;
-  }
-
-  countAdjacentNumbers();
-}
-
-/* ===========================
-   CONTAR NÚMEROS
-=========================== */
-function countAdjacentNumbers() {
-  var dr = [-1, -1, -1, 0, 0, 1, 1, 1];
-  var dc = [-1, 0, 1, -1, 1, -1, 0, 1];
-
-  for (var r = 0; r < rows; r++) {
-    for (var c = 0; c < cols; c++) {
-
-      if (board[r][c].mine) continue;
-
-      var count = 0;
-
-      for (var i = 0; i < 8; i++) {
-        var rr = r + dr[i];
-        var cc = c + dc[i];
-
-        if (isInside(rr, cc, rows, cols) && board[rr][cc].mine) {
-          count++;
-        }
-      }
-
-      board[r][c].adjacent = count;
+  while (placed < MINES) {
+    var r = randomInt(ROWS);
+    var c = randomInt(COLS);
+    if (board[r][c] !== "M") {
+      board[r][c] = "M";
+      minesPositions.push([r, c]);
+      placed++;
     }
   }
 }
 
-/* ===========================
-   IMPRIMIR TABLERO
-=========================== */
-function printBoard() {
-  var wrapper = document.getElementById("board-wrapper");
-  wrapper.innerHTML = "";
+function renderBoard() {
+  boardWrapper.innerHTML = "";
+  var r, c;
 
-  for (var r = 0; r < rows; r++) {
+  for (r = 0; r < ROWS; r++) {
     var rowDiv = document.createElement("div");
     rowDiv.className = "row";
 
-    for (var c = 0; c < cols; c++) {
+    for (c = 0; c < COLS; c++) {
       var cell = document.createElement("div");
       cell.className = "cell";
-      cell.id = "cell-" + r + "-" + c;
+      cell.dataset.r = r;
+      cell.dataset.c = c;
 
-      attachCellEvents(cell, r, c);
+      cell.onmousedown = handleMouseDown;
+      cell.oncontextmenu = function(e){ e.preventDefault(); };
+
       rowDiv.appendChild(cell);
     }
 
-    wrapper.appendChild(rowDiv);
+    boardWrapper.appendChild(rowDiv);
   }
 }
 
-/* ===========================
-   EVENTOS (CLICK IZQ / DER)
-=========================== */
-function attachCellEvents(cell, r, c) {
+function handleMouseDown(e) {
+  if (gameOver) return;
 
-  // CLICK IZQUIERDO
-  cell.addEventListener("click", function () {
-    if (gameOver) return;
+  var r = parseInt(this.dataset.r);
+  var c = parseInt(this.dataset.c);
 
-    // primer click
-    if (!firstClick) {
-      firstClick = true;
-      placeMines(r, c);
-
-      interval = setInterval(function () {
-        timer++;
-        UI.setTimerText(timer);
-      }, 1000);
-    }
-
+  if (e.button === 0) {  
+    setFaceSurprised();
+    setTimeout(setFaceHappy, 120);
     reveal(r, c);
-  });
+  }
 
-  // CLICK DERECHO = BANDERA
-  cell.addEventListener("contextmenu", function (e) {
-    e.preventDefault();
-    if (gameOver) return;
-
+  if (e.button === 2) {
     toggleFlag(r, c);
-    return false;
-  });
+  }
 }
 
-/* ===========================
-   BANDERAS
-=========================== */
 function toggleFlag(r, c) {
-  var cell = board[r][c];
-  var div = document.getElementById("cell-" + r + "-" + c);
+  if (revealed[r][c]) return;
 
-  if (cell.revealed) return;
+  flagged[r][c] = !flagged[r][c];
 
-  if (cell.flagged) {
-    cell.flagged = false;
-    flagsPlaced--;
-    div.innerHTML = "";
+  var cell = getCell(r, c);
+  if (flagged[r][c]) {
+    cell.innerHTML = '<img src="icons/red-flag.png">';
   } else {
-    if (flagsPlaced >= totalMines) return;
-    cell.flagged = true;
-    flagsPlaced++;
-
-    var img = document.createElement("img");
-    img.src = CONFIG.icons.flag;
-    div.innerHTML = "";
-    div.appendChild(img);
+    cell.innerHTML = "";
   }
 
-  UI.setMinesRemaining(totalMines - flagsPlaced);
+  updateFlagsCount();
 }
 
-/* ===========================
-   REVELAR CELDA
-=========================== */
 function reveal(r, c) {
-  var cell = board[r][c];
-  var div = document.getElementById("cell-" + r + "-" + c);
+  if (flagged[r][c] || revealed[r][c]) return;
 
-  if (cell.revealed || cell.flagged) return;
+  if (!timerInterval) startTimer();
 
-  cell.revealed = true;
-  div.classList.add("revealed");
+  revealed[r][c] = true;
+  var cell = getCell(r, c);
+  cell.classList.add("revealed");
 
-  // MINE?
-  if (cell.mine) {
-    lose(r, c);
+  if (board[r][c] === "M") {
+    explode(r, c);
     return;
   }
 
-  // NUMERO
-  if (cell.adjacent > 0) {
-    div.textContent = cell.adjacent;
-    return;
-  }
+  var count = countAdjacent(r, c);
+  if (count > 0) cell.textContent = count;
 
-  // VACIO → EXPANDIR
-  expand(r, c);
+  if (count === 0) revealNeighbors(r, c);
+
+  checkWin();
 }
 
-/* ===========================
-   EXPANDIR VOID
-=========================== */
-function expand(r, c) {
-  var dr = [-1, -1, -1, 0, 0, 1, 1, 1];
-  var dc = [-1, 0, 1, -1, 1, -1, 0, 1];
-
-  for (var i = 0; i < 8; i++) {
-    var rr = r + dr[i];
-    var cc = c + dc[i];
-
-    if (isInside(rr, cc, rows, cols) && !board[rr][cc].revealed) {
-      reveal(rr, cc);
-    }
-  }
-}
-
-/* ===========================
-   PERDER
-=========================== */
-function lose(explodeR, explodeC) {
+function explode(r, c) {
   gameOver = true;
-  clearInterval(interval);
+  setFaceDead();
 
-  UI.setFace("dead");
+  var cell = getCell(r, c);
+  cell.classList.add("blast");
+  cell.innerHTML = '<img src="icons/blast.png">';
 
-  // mostrar minas
-  for (var r = 0; r < rows; r++) {
-    for (var c = 0; c < cols; c++) {
+  clearInterval(timerInterval);
 
-      var cell = board[r][c];
-      var div = document.getElementById("cell-" + r + "-" + c);
+  showResultModal("Perdiste 😵", "La mina explotó.");
+}
 
-      if (cell.mine) {
-        div.innerHTML = "";
-        var img = document.createElement("img");
-        img.src = CONFIG.icons.mine;
-        div.appendChild(img);
+function countAdjacent(r, c) {
+  var total = 0;
+  var dr, dc, nr, nc;
+
+  for (dr = -1; dr <= 1; dr++) {
+    for (dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue;
+      nr = r + dr;
+      nc = c + dc;
+      if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+        if (board[nr][nc] === "M") total++;
       }
     }
   }
-
-  // celda que explotó
-  var blastDiv = document.getElementById("cell-" + explodeR + "-" + explodeC);
-  blastDiv.innerHTML = "";
-  blastDiv.classList.add("blast");
-
-  var bimg = document.createElement("img");
-  bimg.src = CONFIG.icons.blast;
-  blastDiv.appendChild(bimg);
-
-  UI.showResultModal("Perdiste :(", "Intentá de nuevo", false);
+  return total;
 }
 
-/* ===========================
-   GANAR
-=========================== */
-function checkWin() {
-  var revealed = 0;
+function revealNeighbors(r, c) {
+  var dr, dc, nr, nc;
 
-  for (var r = 0; r < rows; r++) {
-    for (var c = 0; c < cols; c++) {
-      if (!board[r][c].mine && board[r][c].revealed) revealed++;
+  for (dr = -1; dr <= 1; dr++) {
+    for (dc = -1; dc <= 1; dc++) {
+      nr = r + dr;
+      nc = c + dc;
+      if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+        if (!revealed[nr][nc]) reveal(nr, nc);
+      }
+    }
+  }
+}
+
+function checkWin() {
+  var r, c;
+  for (r = 0; r < ROWS; r++) {
+    for (c = 0; c < COLS; c++) {
+      if (!revealed[r][c] && board[r][c] !== "M") return;
     }
   }
 
-  if (revealed === rows * cols - totalMines) {
-    win();
-  }
-}
-
-function win() {
+  clearInterval(timerInterval);
   gameOver = true;
-  clearInterval(interval);
 
-  UI.setFace("happy");
-  UI.showResultModal("¡Ganaste!", "Buen trabajo", true);
+  showResultModal("¡Ganaste! 🎉", "Completaste el tablero.");
 }
+
+function getCell(r, c) {
+  return boardWrapper.children[r].children[c];
+}
+
+function startTimer() {
+  timerInterval = setInterval(function(){
+    time++;
+    updateTimer();
+  }, 1000);
+}
+
+function updateTimer() {
+  var min = Math.floor(time / 60);
+  var sec = time % 60;
+  timerEl.textContent =
+    (min < 10 ? "0"+min : min) + ":" + (sec < 10 ? "0"+sec : sec);
+}
+
+function updateFlagsCount() {
+  var count = 0;
+  var r, c;
+  for (r = 0; r < ROWS; r++) {
+    for (c = 0; c < COLS; c++) {
+      if (flagged[r][c]) count++;
+    }
+  }
+  minesRemainingEl.textContent = MINES - count;
+}
+
+/*** EVENTOS ***/
+document.getElementById("reset-btn").onclick = init;
+document.getElementById("start-btn").onclick = function(){
+  var name = document.getElementById("player-name").value;
+  var err = document.getElementById("name-error");
+
+  if (!isValidName(name)) {
+    err.textContent = "Nombre inválido";
+    return;
+  }
+
+  saveName(name);
+  document.getElementById("name-modal").classList.add("hidden");
+  init();
+};
+
+document.getElementById("result-ok").onclick = function(){
+  document.getElementById("result-modal").classList.add("hidden");
+};
+
+document.getElementById("result-restart").onclick = function(){
+  document.getElementById("result-modal").classList.add("hidden");
+  init();
+};
