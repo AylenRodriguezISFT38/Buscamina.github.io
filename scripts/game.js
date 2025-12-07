@@ -143,7 +143,7 @@ function explode(r, c) {
 
   clearInterval(timerInterval);
 
-  showResultModal("Perdiste 😵", "La mina explotó.");
+  showResultModal("Perdiste!", "La mina explotó.");
 }
 
 function countAdjacent(r, c) {
@@ -177,6 +177,7 @@ function revealNeighbors(r, c) {
   }
 }
 
+var crane = document.getElementById("result-icon");
 function checkWin() {
   var r, c;
   for (r = 0; r < ROWS; r++) {
@@ -188,6 +189,7 @@ function checkWin() {
   clearInterval(timerInterval);
   gameOver = true;
 
+  crane.style.visibility = "display";
   showResultModal("¡Ganaste! 🎉", "Completaste el tablero.");
 }
 
