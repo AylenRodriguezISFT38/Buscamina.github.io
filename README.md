@@ -1,4 +1,4 @@
-# Buscaminas — Proyecto Final (Entrega 3)
+# Buscaminas — Proyecto Final
 
 **Autor:** Aylen Rodriguez  
 **Curso:** Desarrollo y Arquitecturas Web 2025
