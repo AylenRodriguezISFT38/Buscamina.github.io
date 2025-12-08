@@ -1,31 +1,44 @@
-# 🧩 Buscaminas — Proyecto en JavaScript
+# Buscaminas — Proyecto Final (Entrega 3)
 
-Este es un proyecto del clásico **Buscaminas**, desarrollado para practicar JavaScript, lógica de juegos y manipulación del DOM. El tablero y la cantidad de minas se generan dinámicamente según el nivel seleccionado.
+**Autor:** Aylen Rodriguez  
+**Curso:** Desarrollo y Arquitecturas Web 2025
 
-## 🚀 Características
-- Tablero dinámico.
-- Niveles de dificultad:
-  - **Fácil:** 8x8 – 10 minas  
-  - **Medio:** 16x16 – 40 minas  
-  - **Difícil:** 24x24 – 99 minas
-- Celdas interactivas:
-  - Descubrir casilla.
-  - Colocar bandera.
-  - Mostrar números según minas alrededor.
-  - Explosión cuando se toca una mina.
-- Reinicio de partida.
-- Sonidos e iconos personalizados.
+## Estructura
+- `index.html` — juego principal
+- `contact.html` — formulario de contacto
+- `css/style.css` — estilos
+- `scripts/` — lógica (config, utils, storage, validation, ui, game)
+- `icons/` — imágenes (caritas, banderas, minas...)
+- `sounds/` — sonidos (open.mp3, close.mp3, reveal.mp3, explode.mp3, win.mp3)
 
-## ▶ Cómo ejecutar
-1. Descargar o clonar el repositorio.  
-2. Abrir **index.html** en un navegador.  
-3. Seleccionar un nivel y comenzar a jugar.
+## Cómo probar
+1. Colocar assets (`icons/` y `sounds/`) en las carpetas correspondientes.
+2. Abrir `index.html` en el navegador.
+3. Ingresar nombre (mín. 3 letras).
+4. Seleccionar dificultad y jugar.
+5. Al ganar/perder, la partida se guarda en LocalStorage (ver Ranking).
+6. Contacto: `contact.html` valida y abre `mailto:`.
 
-## 📌 Tecnologías
-- HTML5  
-- CSS3  
-- JavaScript  
+## Requerimientos cubiertos (resumen)
+- Tablero dinámico y responsive.
+- Click izquierdo/derecho (bandera).
+- Primer click seguro.
+- Expansión de casillas vacías.
+- Temporizador y contador de minas.
+- Modales en vez de alert.
+- Validaciones JS (nombre y contacto).
+- Guardado de partidas en LocalStorage y modal Ranking.
+- Orden por tiempo o fecha.
+- Modo claro/oscuro y persistencia.
+- Sonidos en eventos.
+- Contact page con validación.
+- Accesibilidad básica (focus, atajos).
 
-## 🎯 Objetivo
-Proyecto Final - Desarrollo y Arquitecturas Web 2025
-Link de interés: https://minesweeper.online/es/
+## Commits sugeridos (ejemplo)
+- `feat: estructura base del proyecto`
+- `feat: tablero dinámico y lógica básica`
+- `feat: banderas, primera versión UI`
+- `feat: ranking y almacenamiento en localStorage`
+- `feat: modo claro/oscuro y presets de dificultad`
+- `feat: contact page y validaciones`
+- `fix: corregir bugs y mejorar accesibilidad`

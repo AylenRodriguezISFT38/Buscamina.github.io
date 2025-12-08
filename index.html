@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Buscaminas</title>
+  <title>Mineswipper</title>
+  <link rel="stylesheet" href="css/normalize.css"/>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -13,28 +14,41 @@
 
     <div class="top-bar">
       <div class="counter">
-        <img src="icons/bomb.png" height="20" alt="mine" />
-        Minas: <span id="mines-remaining">10</span></div>
+        <img src="icons/bomb.png" height="20" alt="bomb"> Minas: <span id="mines-remaining">10</span>
+      </div>
 
-      <button id="reset-btn" class="btn">
-        <img id="face-icon" src="icons/happiness.png" alt="face" />
-      </button>
+      <div class="mid-controls">
+        
+
+  <button id="theme-btn" class="btn" title="Tema">
+          <img id="theme-icon" src="icons/moon.png" class="theme-icon" alt="tema" />
+        </button>
+<button id="reset-btn" class="btn" title="Reiniciar (Espacio)">
+          <img id="face-icon" src="icons/happiness.png" alt="face" />
+        </button>
+        <select id="difficulty-select" class="select" title="Dificultad">
+          <option value="easy">Fácil (8×8 — 10 minas)</option>
+          <option value="medium">Medio (12×12 — 25 minas)</option>
+          <option value="hard">Difícil (16×16 — 40 minas)</option>
+        </select>
+
+        <button id="ranking-btn" class="btn">Ranking</button>
+      </div>
 
       <div class="timer">
-        
-        <img src="icons/clock.png" height="20" alt="mine" />
-        Tiempo: <span id="timer">00:00</span></div>
+        <img src="icons/clock.png" height="20" alt="clock"> Tiempo: <span id="timer">00:00</span>
+      </div>
     </div>
   </header>
 
   <main class="main">
-    <section id="board-wrapper" class="board-wrapper"></section>
     
+    <section id="board-wrapper" class="board-wrapper" aria-label="Tablero"></section>
   </main>
 
   <div id="name-modal" class="modal">
     <div class="modal-card">
-      <img src="icons/id-card.png" class="big-icon" alt="id">
+      <img src="icons/id-card.png" class="big-icon" alt="id" />
       <h2>Ingresá tu nombre</h2>
       <input id="player-name" type="text" placeholder="mínimo 3 letras" />
       <p id="name-error" class="error"></p>
@@ -44,9 +58,9 @@
     </div>
   </div>
 
-  <div id="result-modal" class="modal hidden">
+  <div id="result-modal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-card">
-      <img id="result-icon" src="icons/crane.png" class="big-icon" alt="result">
+      <img id="result-icon" src="icons/crane.png" class="big-icon" alt="result" />
       <h2 id="result-title">Resultado</h2>
       <p id="result-message"></p>
       <div class="modal-actions">
@@ -56,17 +70,25 @@
     </div>
   </div>
 
-<footer class="footer">
-    <p>Hecho por Aylen Rodriguez - 2025 - Final </p>
-</footer>
+  <div id="ranking-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2>Ranking</h2>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;">
+        <button id="sort-by-score" class="btn">Ordenar por tiempo</button>
+        <button id="sort-by-date" class="btn">Ordenar por fecha</button>
+        <button id="clear-ranking" class="btn">Borrar ranking</button>
+      </div>
+      <div id="ranking-list" style="max-height:260px; overflow:auto; text-align:left;"></div>
+      <div class="modal-actions">
+        <button id="close-ranking" class="btn">Cerrar</button>
+      </div>
+    </div>
+  </div>
 
-  <script src="scripts/config.js"></script>
-  <script src="scripts/utils.js"></script>
-  <script src="scripts/storage.js"></script>
-  <script src="scripts/validation.js"></script>
-  <script src="scripts/ui.js"></script>
-  <script src="scripts/game.js"></script>
+  <footer class="footer">
+    <p>Hecho por Aylen Rodríguez — 2025</p>
+  </footer>
 
+  <script type="module" src="scripts/main.js"></script>
 </body>
-
 </html>

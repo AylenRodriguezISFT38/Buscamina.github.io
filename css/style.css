@@ -1,4 +1,5 @@
 body {
+  margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   background: #1f1f1f;
   color: #eaeaea;
@@ -8,8 +9,19 @@ body {
   min-height: 100vh;
 }
 
-.header { width: 100%; max-width: 900px; padding: 18px 12px; }
-.title { text-align: center; margin-bottom: 8px; }
+body.light {
+  background: #f5f5f5;
+  color: #222;
+}
+
+.header { 
+  width: 100%; 
+  max-width: 1100px; 
+  padding: 18px 12px; }
+.title { 
+  text-align: center; 
+  margin-bottom: 8px; 
+}
 
 .top-bar {
   display: flex;
@@ -20,135 +32,230 @@ body {
   border-radius: 6px;
   border: 1px solid #3d3d3d;
 }
+body.light .top-bar { 
+  background:#fff; 
+  border-color:#ddd; 
+  color:#222; 
+}
 
-.counter, .timer { font-weight: 600; }
+.counter, .timer { 
+  font-weight: 600; 
+  display:flex; 
+  align-items:center; 
+  gap:6px; 
+}
+
+.mid-controls { 
+  display:flex; 
+  align-items:center; 
+  gap:8px; 
+}
 
 .btn {
-  background: #3b6df0;
+  background: #2a2a2a;
   color: #fff;
   border: none;
-  padding: 6px 10px;
+  padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
 }
-.btn:active { transform: translateY(1px); }
-
-.main {
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
+.btn:active { 
+  transform: translateY(1px); 
+}
+.btn img { 
+  vertical-align: middle; 
 }
 
-.board-wrapper {
-  background: #2a2a2a;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #3d3d3d;
-  display: inline-block;
+.main { 
+  width: 100%; 
+  max-width: 1100px; 
+  display: flex; 
+  justify-content: center; 
+  margin-top: 18px; 
+}
+.board-wrapper { 
+  background: #2a2a2a; 
+  padding: 10px; 
+  border-radius: 8px; 
+  border: 1px solid #3d3d3d; 
+  display:inline-block;
+}
+body.light .board-wrapper{ 
+  background:#fff; 
+  border-color:#ddd; 
+  color:#222; 
 }
 
-.row {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
+.row { 
+  display:flex; 
+  gap: 6px; 
+  justify-content:center; 
 }
 
 .cell {
-  width: 38px;
+  width: 38px; 
   height: 38px;
   background: #414141;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #eee;
-  font-weight: 700;
-  border-radius: 4px;
-  cursor: pointer;
-  user-select: none;
-  border: 1px solid #505050;
-  font-size: 18px;
-  box-sizing: border-box;
-}
-
-.cell:hover { filter: brightness(1.08); }
-
-.cell.revealed {
-  background: #dcdcdc;
-  color: #222;
-  cursor: default;
-  border: 1px solid #bdbdbd;
-}
-
-.cell.flagged {
-  background: #7b2b2b;
-}
-
-.cell img {
-  width: 22px;
-  height: 22px;
-  pointer-events: none;
-}
-
-/* mina explotada */
-.cell.blast {
-  background: #8b0000 !important;
-  border-color: #ff4444 !important;
-}
-
-/* Modales */
-.modal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(10,10,10,0.65);
-}
-.modal.hidden { display: none; }
-
-.modal-card {
-  background: #272727;
-  padding: 18px;
-  border-radius: 8px;
-  width: 320px;
-  border: 1px solid #3d3d3d;
-  text-align: center;
-}
-
-.modal-card input {
-  width: 90%;
-  padding: 8px;
-  margin-top: 10px;
-  border-radius: 6px;
-  border: 1px solid #444;
-  background: #1b1b1b;
-  color: #fff;
-}
-
-.modal-actions {
-  margin-top: 12px;
-  display:flex;
-  gap:8px;
+  display:flex; 
+  align-items:center; 
   justify-content:center;
+  color:#eee; 
+  font-weight:700; 
+  border-radius:4px; 
+  cursor:pointer; 
+  user-select:none;
+  border:1px solid #505050; 
+  font-size:18px;
+  transition: background .15s;
 }
 
-.big-icon { width: 80px; margin-bottom: 10px; }
-
-#face-icon { width: 32px; height: 32px; }
-
-.counter, .timer{
-  display: flex;
-  align-items: center;
-  gap: 6px;
+body.light .cell{
+  background:#e0e0e0;
+  color:#222;
+  border-color:#d9d9d9;
 }
 
-.footer {
-  margin-top: auto;
-  padding: 12px;
-  text-align: center;
-  font-size: 14px;
-  color: #888;
-} 
+.cell:hover{ 
+  filter:brightness(1.06); 
+}
+
+.cell:active {
+  background: #5a5a5a;
+}
+body.light .cell:active {
+  background: #e0e0e0;
+}
+
+.cell.revealed{
+  background:#dcdcdc;
+  color:#222;
+  cursor:default;
+  border:1px solid #bdbdbd;
+}
+body.dark .cell.revealed{
+  background:#2f2f2f;
+  border-color:#555;
+  color:#eee;
+}
+
+.cell.flagged{
+  background:#7b2b2b;
+  border-color:#9e3b3b;
+}
+
+body.light .cell.flagged{
+  background:#c85c5c;
+  border-color:#da7272;
+  color:#fff;
+}
+
+.cell.blast{
+  background:#8b0000 ;
+  border-color:#ff4444 ;
+  color:transparent;
+}
+
+.cell img{ 
+  width:22px; 
+  height:22px; 
+  pointer-events:none; 
+}
+
+.modal{ 
+  position:fixed; 
+  inset:0; 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  background:#0A0A0AA6; 
+  z-index:60; 
+}
+
+.modal.hidden{ 
+  display:none; 
+}
+.modal-card{ 
+  background:#272727; 
+  padding:18px; 
+  border-radius:8px; 
+  width:360px; 
+  border:1px solid #3d3d3d; 
+  text-align:center; 
+}
+body.light .modal-card{ 
+  background:#fff; 
+  color:#222; 
+  border-color:#ddd; 
+}
+.modal-card input{ 
+  width:90%; 
+  padding:8px; 
+  margin-top:10px; 
+  border-radius:6px; 
+  border:1px solid #444; 
+  background:#1b1b1b; 
+  color:#fff; 
+}
+body.light .modal-card input{ 
+  background:#fff; 
+  color:#222; 
+  border:1px solid #ddd; 
+}
+.modal-actions{ 
+  margin-top:12px; 
+  display:flex; 
+  gap:8px; 
+  justify-content:center; 
+}
+.error{ 
+  color:#ff7b7b; 
+  height:18px; 
+  margin-top:8px; 
+  font-size:14px; 
+}
+.big-icon{ 
+  width:80px; 
+  margin-bottom:10px; 
+}
+.theme-icon{ 
+  width:28px; 
+  height:28px; 
+}
+
+#ranking-list .row-item{ 
+  display:flex; 
+  justify-content:space-between; 
+  padding:6px 4px; 
+  border-bottom:1px solid #FFFFFF08; 
+}
+
+.footer{ 
+  margin-top:auto; 
+  padding:12px; 
+  text-align:center; 
+  font-size:14px; 
+  color:#888; 
+}
+
+@media (max-width:600px){
+  .cell{ 
+    width:30px; 
+    height:30px; 
+    font-size:16px; 
+  }
+  .modal-card{ 
+    width:92%; 
+  }
+  .top-bar{ 
+    flex-direction:column; 
+    gap:10px; 
+    align-items:center; 
+  }
+}
+
+#face-icon{
+  width:32px;
+  height:32px;
+  cursor:pointer;
+}
