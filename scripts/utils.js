@@ -14,3 +14,7 @@ export function formatTime(sec) {
 export function nowIso() {
   return (new Date()).toISOString();
 }
+export function formatDate(isoString) {
+  const d = new Date(isoString);
+  return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+}

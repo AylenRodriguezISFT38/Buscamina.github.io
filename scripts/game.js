@@ -21,10 +21,9 @@ const elTimer = () => document.getElementById('timer');
 const elMines = () => document.getElementById('mines-remaining');
 document.addEventListener('touchstart', () => {}, {passive: false});
 
-export function init() {  bindControls();
-
+export function init() {
+  bindControls();
   applyPreset(currentDifficulty);
-
   if (!playerName) UI.showNameModal();
   else startNewGame();
 }
@@ -72,7 +71,7 @@ function bindControls() {
   });
 
   const sortScore = document.getElementById('sort-by-score');
-  if (sortScore) sortScore.addEventListener('click', function(){ UI.sortRanking('time'); });
+  if (sortScore) sortScore.addEventListener('click', function(){ UI.sortRanking('score'); });
   const sortDate = document.getElementById('sort-by-date');
   if (sortDate) sortDate.addEventListener('click', function(){ UI.sortRanking('date'); });
   const clearRank = document.getElementById('clear-ranking');
@@ -97,7 +96,6 @@ function startNewGame() {
 
 function restart() { startNewGame(); }
 
-
 function renderBoard() {
   const wrapper = elBoard();
   wrapper.innerHTML = '';
@@ -116,34 +114,28 @@ function renderBoard() {
       cell.addEventListener('mouseup', function(e){ setTimeout(function(){ if (!ended) UI.setFace('happy'); }, 120); if (e.button === 0) leftAction(r,c); });
       cell.addEventListener('contextmenu', function(e){ e.preventDefault(); toggleFlag(r,c); return false; });
 
+      // mobile: long-press to flag, tap to open
       let touchTimer = null;
       let touchMoved = false;
 
       cell.addEventListener('touchstart', (ev) => {
         touchMoved = false;
-
         touchTimer = setTimeout(() => {
           toggleFlag(r, c);
           touchTimer = null;
-        }, 250);
+        }, 300);
       });
 
       cell.addEventListener('touchmove', () => {
         touchMoved = true;
-        if (touchTimer) {
-          clearTimeout(touchTimer);
-          touchTimer = null;
-        }
+        if (touchTimer) { clearTimeout(touchTimer); touchTimer = null; }
       });
 
       cell.addEventListener('touchend', (ev) => {
         if (touchTimer) {
           clearTimeout(touchTimer);
           touchTimer = null;
-
-          if (!touchMoved) {
-            leftAction(r, c);
-          }
+          if (!touchMoved) leftAction(r, c);
         }
         ev.preventDefault();
       });
@@ -156,6 +148,7 @@ function renderBoard() {
   }
 }
 
+/* CHORDING */
 function handleChord(r, c) {
   if (!board || ended) return;
   if (!board.revealed[r][c]) return;
@@ -174,15 +167,13 @@ function handleChord(r, c) {
     }
   }
 
-  if (flags !== val) return; 
+  if (flags !== val) return;
 
   for (let i = 0; i < neigh.length; i++) {
     const n = neigh[i];
     if (board.flagged[n.r][n.c] || board.revealed[n.r][n.c]) continue;
-
     const results = board.revealCell(n.r, n.c);
     updateDOMForResults(results);
-
     if (results && results.some(x => x.mine)) {
       playExplodeAndEnd(n.r, n.c);
       return;
@@ -243,9 +234,56 @@ function updateDOMForResults(results) {
   });
 }
 
-function calculateScore() {
+/* PUNTAJE - Opción B */
+function calculateScoreOnWin() {
+  // celdas reveladas * 10
+  let revealedCount = 0;
+  for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if (board.revealed[r][c]) revealedCount++;
+
+  // banderas correctas / incorrectas
+  let correctFlags = 0, incorrectFlags = 0;
+  for (let r=0;r<rows;r++){
+    for (let c=0;c<cols;c++){
+      if (board.flagged[r][c]) {
+        if (board.grid[r][c] === 'M') correctFlags++;
+        else incorrectFlags++;
+      }
+    }
+  }
+
   const t = Math.max(1, seconds);
-  return Math.floor((mines * 1000) / t);
+  const base = revealedCount * 10;
+  const flagsBonus = correctFlags * 50;
+  const flagsPenalty = incorrectFlags * 20;
+  const timeBonus = Math.floor((mines / t) * 500); // minas / tiempo * factor
+
+  const raw = base + flagsBonus - flagsPenalty + timeBonus;
+  return Math.max(0, Math.floor(raw));
+}
+
+function calculateScoreOnLoss() {
+  // similar but penalizado por no completar
+  let revealedCount = 0;
+  for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if (board.revealed[r][c]) revealedCount++;
+
+  let correctFlags = 0, incorrectFlags = 0;
+  for (let r=0;r<rows;r++){
+    for (let c=0;c<cols;c++){
+      if (board.flagged[r][c]) {
+        if (board.grid[r][c] === 'M') correctFlags++;
+        else incorrectFlags++;
+      }
+    }
+  }
+
+  const t = Math.max(1, seconds);
+  const base = Math.floor(revealedCount * 5); // less weight on loss
+  const flagsBonus = Math.floor(correctFlags * 25);
+  const flagsPenalty = Math.floor(incorrectFlags * 30);
+  const timeBonus = Math.floor((mines / t) * 100);
+
+  const raw = base + flagsBonus - flagsPenalty + timeBonus;
+  return Math.max(0, Math.floor(raw));
 }
 
 function playExplodeAndEnd(r,c) {
@@ -260,7 +298,8 @@ function playExplodeAndEnd(r,c) {
   });
   UI.setFace('dead');
 
-  const score = 0;
+  const score = calculateScoreOnLoss();
+
   Storage.saveResult({
     name: playerName,
     difficulty: currentDifficulty,
@@ -270,7 +309,7 @@ function playExplodeAndEnd(r,c) {
     score: score
   });
 
-  UI.showResultModal('Perdiste', playerName + ', pisaste una mina.', false);
+  UI.showResultModal('Perdiste', playerName + ', pisaste una mina. Score: ' + score, false);
 }
 
 function checkWin() {
@@ -280,7 +319,7 @@ function checkWin() {
     ended = true; stopTimer();
     UI.setFace('happy');
 
-    const score = calculateScore();
+    const score = calculateScoreOnWin();
 
     Storage.saveResult({
       name: playerName,

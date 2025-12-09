@@ -69,6 +69,9 @@
     cursor: pointer;
     font-weight: 600;
   }
+  .btn:hover{
+    filter:brightness(1.2);
+  }
   .light .btn{
     background:#e0e0e0;
     color:#222;
@@ -196,7 +199,7 @@
     background:#272727; 
     padding:18px; 
     border-radius:8px; 
-    width:360px; 
+    width:410px; 
     border:1px solid #3d3d3d; 
     text-align:center; 
   }
@@ -239,14 +242,36 @@
     width:28px; 
     height:28px; 
   }
-
+#ranking-list{
+  max-height:260px;
+  width: 400px; 
+    overflow-y: scroll;
+    overflow-x: hidden;
+  text-align:left;
+}
   #ranking-list .row-item{ 
     display:flex; 
     justify-content:space-between; 
     padding:6px 4px; 
-    border-bottom:1px solid #FFFFFF08; 
+  }
+  #ranking-list .row-item div{ 
+    width: 83px;
+    border-bottom: #414141 solid 1px;
+    text-align: center;
   }
 
+  #clear-ranking{
+    background-color: #9e3b3b;
+  }
+    #clear-ranking:hover{
+    background-color: #b44b4b;
+  }
+#sort-rank{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-bottom:8px;
+}
   .footer{ 
     margin-top:auto; 
     padding:12px; 
@@ -262,7 +287,7 @@
       font-size:16px; 
     }
     .modal-card{ 
-      width:92%; 
+      width:82%; 
     }
     .top-bar{ 
       flex-direction:column; 

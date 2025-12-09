@@ -71,19 +71,23 @@
   </div>
 
   <div id="ranking-modal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <h2>Ranking</h2>
-      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;">
-        <button id="sort-by-score" class="btn">Ordenar por tiempo</button>
-        <button id="sort-by-date" class="btn">Ordenar por fecha</button>
-        <button id="clear-ranking" class="btn">Borrar ranking</button>
-      </div>
-      <div id="ranking-list" style="max-height:260px; overflow:auto; text-align:left;"></div>
-      <div class="modal-actions">
-        <button id="close-ranking" class="btn">Cerrar</button>
-      </div>
+  <div class="modal-card">
+    <h2>Ranking</h2>
+    <div id="sort-rank">
+      <button id="clear-ranking" class="btn">Borrar ranking</button>
+      <button id="sort-by-score" class="btn">Ordenar por puntaje</button>
+      <button id="sort-by-time" class="btn">Ordenar por tiempo</button>
+      <button id="sort-by-date" class="btn">Ordenar por fecha</button>
+    </div>
+
+    <div id="ranking-list"></div>
+
+    <div class="modal-actions">
+      <button id="close-ranking" class="btn">Cerrar</button>
     </div>
   </div>
+</div>
+
 
 <div id="contactModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
   <div class="modal-contact" role="document" >

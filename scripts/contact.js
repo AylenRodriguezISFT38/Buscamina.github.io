@@ -1,5 +1,6 @@
 'use strict';
 import { SOUNDS } from './config.js';
+import { isValidContactName, isValidEmail, isValidMessage } from './validation.js';
 
 const modal = document.getElementById("contactModal");
 const openBtn = document.getElementById("openContact");
@@ -37,16 +38,16 @@ form.addEventListener("submit", async (e) => {
   const email = emailInput.value.trim();
   const message = messageInput.value.trim();
 
-  if (name.length < 2) {
-    errorBox.textContent = "Ingresá un nombre válido.";
+  if (!isValidContactName(name)) {
+    errorBox.textContent = "Ingresá un nombre válido (solo letras/números, mínimo 3 caracteres).";
     return;
   }
-  if (!email.includes("@") || !email.includes(".")) {
+  if (!isValidEmail(email)) {
     errorBox.textContent = "Ingresá un email válido.";
     return;
   }
-  if (message.length < 5) {
-    errorBox.textContent = "El mensaje es demasiado corto.";
+  if (!isValidMessage(message)) {
+    errorBox.textContent = "El mensaje debe tener al menos 6 caracteres.";
     return;
   }
 
