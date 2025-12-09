@@ -23,9 +23,7 @@
   <button id="theme-btn" class="btn" title="Tema">
           <img id="theme-icon" src="icons/moon.png" class="theme-icon" alt="tema" />
         </button>
-<button id="reset-btn" class="btn" title="Reiniciar (Espacio)">
-          <img id="face-icon" src="icons/happiness.png" alt="face" />
-        </button>
+       
         <select id="difficulty-select" class="select" title="Dificultad">
           <option value="easy">Fácil (8×8 — 10 minas)</option>
           <option value="medium">Medio (12×12 — 25 minas)</option>
@@ -42,7 +40,9 @@
   </header>
 
   <main class="main">
-    
+     <button id="reset-btn" class="btn" title="Reiniciar (Espacio)">
+          <img id="face-icon" src="icons/happiness.png" alt="face" />
+      </button>
     <section id="board-wrapper" class="board-wrapper" aria-label="Tablero"></section>
   </main>
 
@@ -85,10 +85,53 @@
     </div>
   </div>
 
+<div id="contactModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="modal-contact" role="document" >
+    <div class="mail-content-title">
+    <img src="icons/mail.png"  alt="contact" />
+    <h2 id="contactTitle">Dejanos tu comentario</h2>
+    </div>
+
+
+    <form id="contactForm" novalidate>
+      <div class="field">
+        <label for="contact-name">Nombre</label>
+        <input id="contact-name" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="contact-email">Email</label>
+        <input id="contact-email" type="email" />
+      </div>
+
+      <div class="field">
+        <label for="contact-message">Mensaje</label>
+        <textarea id="contact-message"></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button id="sendBtn" class="btn" type="submit">Enviar</button>
+        <button id="closeContact" type="button" class="btn">Cerrar</button>
+      </div>
+
+      <p id="contact-error" class="modal-error" aria-live="polite"></p>
+    </form>
+  </div>
+</div>
+
+
+
   <footer class="footer">
     <p>Hecho por Aylen Rodríguez — 2025</p>
+    <a href="#" id="openContact" class="link-btn">Contacto</a>
+    —
+    <a href="https://github.com/AylenRodriguezISFT38/Buscamina.github.io" target="_blank" class="link-btn">Ir al repositorio</a>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init("yDBuoxhqeRfrg18BQ"); 
+  </script>
   <script type="module" src="scripts/main.js"></script>
 </body>
 </html>

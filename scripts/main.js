@@ -8,6 +8,7 @@ import * as Difficulty from './difficulty.js';
 import * as Theme from './theme.js';
 import Board from './board.js';
 import Game from './game.js';
+import * as Contact from './contact.js';
 
 Theme.init();
 UI.init();       

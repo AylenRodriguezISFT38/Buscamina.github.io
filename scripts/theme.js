@@ -8,9 +8,11 @@ export function init() {
   var icon = document.getElementById('theme-icon');
   if (theme === 'light') {
     document.body.classList.add('light');
-    if (icon) icon.src = ICONS.day;
+    if (icon) 
+      icon.src = ICONS.day;
   } else {
     document.body.classList.remove('light');
-    if (icon) icon.src = ICONS.night;
+    if (icon) 
+      icon.src = ICONS.night;
   }
 }

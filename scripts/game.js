@@ -19,6 +19,7 @@ let currentDifficulty = (Storage.loadSettings()||{}).difficulty || 'easy';
 const elBoard = () => document.getElementById('board-wrapper');
 const elTimer = () => document.getElementById('timer');
 const elMines = () => document.getElementById('mines-remaining');
+document.addEventListener('touchstart', () => {}, {passive: false});
 
 export function init() {  bindControls();
 
@@ -114,6 +115,40 @@ function renderBoard() {
       cell.addEventListener('mousedown', function(e){ if (e.button === 0) UI.setFace('surprised'); });
       cell.addEventListener('mouseup', function(e){ setTimeout(function(){ if (!ended) UI.setFace('happy'); }, 120); if (e.button === 0) leftAction(r,c); });
       cell.addEventListener('contextmenu', function(e){ e.preventDefault(); toggleFlag(r,c); return false; });
+
+// parte mobile
+      let touchTimer = null;
+      let touchMoved = false;
+
+      cell.addEventListener('touchstart', (ev) => {
+        touchMoved = false;
+
+        touchTimer = setTimeout(() => {
+          toggleFlag(r, c);
+          touchTimer = null;
+        }, 250); 
+      });
+
+      cell.addEventListener('touchmove', () => {
+        touchMoved = true;
+        if (touchTimer) {
+          clearTimeout(touchTimer);
+          touchTimer = null;
+        }
+      });
+
+      cell.addEventListener('touchend', (ev) => {
+        if (touchTimer) {
+          clearTimeout(touchTimer);
+          touchTimer = null;
+
+          if (!touchMoved) {
+            leftAction(r, c);
+          }
+        }
+        ev.preventDefault();
+      });
+
       cell.addEventListener('keydown', function(e){ if (e.key === 'Enter') leftAction(r,c); if (e.key === 'f' || e.key === 'F') toggleFlag(r,c); });
 
       rowDiv.appendChild(cell);
