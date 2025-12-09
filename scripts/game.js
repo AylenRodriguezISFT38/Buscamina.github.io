@@ -116,7 +116,6 @@ function renderBoard() {
       cell.addEventListener('mouseup', function(e){ setTimeout(function(){ if (!ended) UI.setFace('happy'); }, 120); if (e.button === 0) leftAction(r,c); });
       cell.addEventListener('contextmenu', function(e){ e.preventDefault(); toggleFlag(r,c); return false; });
 
-// parte mobile
       let touchTimer = null;
       let touchMoved = false;
 
@@ -126,7 +125,7 @@ function renderBoard() {
         touchTimer = setTimeout(() => {
           toggleFlag(r, c);
           touchTimer = null;
-        }, 250); 
+        }, 250);
       });
 
       cell.addEventListener('touchmove', () => {
@@ -157,8 +156,50 @@ function renderBoard() {
   }
 }
 
+function handleChord(r, c) {
+  if (!board || ended) return;
+  if (!board.revealed[r][c]) return;
+  const val = board.grid[r][c];
+  if (typeof val !== 'number' || val <= 0) return;
+
+  let flags = 0;
+  const neigh = [];
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue;
+      const nr = r + dr, nc = c + dc;
+      if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
+      neigh.push({r: nr, c: nc});
+      if (board.flagged[nr][nc]) flags++;
+    }
+  }
+
+  if (flags !== val) return; 
+
+  for (let i = 0; i < neigh.length; i++) {
+    const n = neigh[i];
+    if (board.flagged[n.r][n.c] || board.revealed[n.r][n.c]) continue;
+
+    const results = board.revealCell(n.r, n.c);
+    updateDOMForResults(results);
+
+    if (results && results.some(x => x.mine)) {
+      playExplodeAndEnd(n.r, n.c);
+      return;
+    }
+  }
+
+  checkWin();
+}
+
 function leftAction(r,c) {
   if (ended) return;
+
+  if (board.revealed[r] && board.revealed[r][c] && typeof board.grid[r][c] === 'number' && board.grid[r][c] > 0) {
+    handleChord(r, c);
+    return;
+  }
+
   if (board.flagged[r][c]) return;
   if (!started) { started = true; board.placeMinesAvoiding(r,c); startTimer(); }
   const results = board.revealCell(r,c);
@@ -202,6 +243,11 @@ function updateDOMForResults(results) {
   });
 }
 
+function calculateScore() {
+  const t = Math.max(1, seconds);
+  return Math.floor((mines * 1000) / t);
+}
+
 function playExplodeAndEnd(r,c) {
   ended = true;
   stopTimer();
@@ -213,13 +259,17 @@ function playExplodeAndEnd(r,c) {
     el.innerHTML = '<img src="'+ICONS.mine+'" alt="mine">';
   });
   UI.setFace('dead');
+
+  const score = 0;
   Storage.saveResult({
     name: playerName,
     difficulty: currentDifficulty,
     time: seconds,
     timeText: formatTime(seconds),
-    date: nowIso()
+    date: nowIso(),
+    score: score
   });
+
   UI.showResultModal('Perdiste', playerName + ', pisaste una mina.', false);
 }
 
@@ -229,18 +279,22 @@ function checkWin() {
   if (safe === (rows*cols - mines)) {
     ended = true; stopTimer();
     UI.setFace('happy');
+
+    const score = calculateScore();
+
     Storage.saveResult({
       name: playerName,
       difficulty: currentDifficulty,
       time: seconds,
       timeText: formatTime(seconds),
-      date: nowIso()
+      date: nowIso(),
+      score: score
     });
-    UI.showResultModal('Ganaste', playerName + ', completaste el tablero en ' + formatTime(seconds) + '.', true);
+
+    UI.showResultModal('Ganaste', playerName + ', completaste el tablero en ' + formatTime(seconds) + '. Score: ' + score, true);
   }
 }
 
-/* timer */
 function startTimer() {
   seconds = 0; UI.setTimerText(seconds);
   if (timerInterval) clearInterval(timerInterval);

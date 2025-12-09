@@ -12,12 +12,11 @@
 - `sounds/` — sonidos
 
 ## Cómo probar
-1. Colocar assets (`icons/` y `sounds/`) en las carpetas correspondientes.
-2. Abrir `index.html` en el navegador.
-3. Ingresar nombre (mín. 3 letras).
-4. Seleccionar dificultad y jugar.
-5. Al ganar/perder, la partida se guarda en LocalStorage (ver Ranking).
-6. Contacto: `contact.html` valida y abre `mailto:`.
+1. Abrir `index.html` en el navegador.
+2. Ingresar nombre (mín. 3 letras).
+3. Seleccionar dificultad y jugar.
+4. Al ganar/perder, la partida se guarda en LocalStorage (ver Ranking).
+5. Contacto: Validamos y usamos MailJS para enviar los mensajes.
 
 ## Requerimientos
 - Tablero dinámico y responsive.
@@ -33,7 +32,4 @@
 - Sonidos en eventos.
 - Contact page con validación.
 - Accesibilidad básica (focus, atajos).
-<<<<<<< HEAD
 
-=======
->>>>>>> 4afe6b5042ce83ad07614a55246b72f7e0165443
