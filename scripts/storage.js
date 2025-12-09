@@ -1,5 +1,5 @@
 'use strict';
-const LS_KEYS = {
+var LS_KEYS = {
   ranking: 'ms_ranking_v1',
   settings: 'ms_settings_v1',
   player: 'ms_player_v1'

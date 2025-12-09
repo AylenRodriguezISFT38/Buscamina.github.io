@@ -1,42 +1,42 @@
 'use strict';
 import { SOUNDS } from './config.js';
 import { isValidContactName, isValidEmail, isValidMessage } from './validation.js';
+emailjs.init("yDBuoxhqeRfrg18BQ"); 
+var modal = document.getElementById("contactModal");
+var openBtn = document.getElementById("openContact");
+var closeBtn = document.getElementById("closeContact");
 
-const modal = document.getElementById("contactModal");
-const openBtn = document.getElementById("openContact");
-const closeBtn = document.getElementById("closeContact");
+var form = document.getElementById("contactForm");
+var nameInput = document.getElementById("contact-name");
+var emailInput = document.getElementById("contact-email");
+var messageInput = document.getElementById("contact-message");
+var errorBox = document.getElementById("contact-error");
 
-const form = document.getElementById("contactForm");
-const nameInput = document.getElementById("contact-name");
-const emailInput = document.getElementById("contact-email");
-const messageInput = document.getElementById("contact-message");
-const errorBox = document.getElementById("contact-error");
-
-openBtn.addEventListener("click", (e) => {
+openBtn.addEventListener("click", function(e)  {
   e.preventDefault();
   SOUNDS.open && new Audio(SOUNDS.open).play();
   modal.classList.remove("hidden");
 });
 
-closeBtn.addEventListener("click", () => {
+closeBtn.addEventListener("click", function()  {
   SOUNDS.close && new Audio(SOUNDS.close).play();
   modal.classList.add("hidden");
 });
 
-modal.addEventListener("click", (e) => {
+modal.addEventListener("click", function(e)  {
   if (e.target === modal) {
     modal.classList.add("hidden");
     SOUNDS.close && new Audio(SOUNDS.close).play();
   }
 });
 
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", async function(e) {
   e.preventDefault();
   errorBox.textContent = ""; 
 
-  const name = nameInput.value.trim();
-  const email = emailInput.value.trim();
-  const message = messageInput.value.trim();
+  var name = nameInput.value.trim();
+  var email = emailInput.value.trim();
+  var message = messageInput.value.trim();
 
   if (!isValidContactName(name)) {
     errorBox.textContent = "Ingresá un nombre válido (solo letras/números, mínimo 3 caracteres).";
@@ -51,7 +51,7 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const params = {
+  var params = {
     from_name: name,
     from_email: email,
     message: message,
@@ -70,7 +70,7 @@ form.addEventListener("submit", async (e) => {
 
     SOUNDS.open && new Audio(SOUNDS.open).play();
 
-    setTimeout(() => {
+    setTimeout(function() {
       modal.classList.add("hidden");
       errorBox.textContent = "";
       form.reset();

@@ -3,80 +3,80 @@ import { SOUNDS, ICONS } from './config.js';
 import * as Storage from './storage.js';
 import { formatTime, formatDate } from './utils.js';
 
-const audioOpen = SOUNDS.open ? new Audio(SOUNDS.open) : null;
-const audioClose = SOUNDS.close ? new Audio(SOUNDS.close) : null;
-const audioReveal = SOUNDS.reveal ? new Audio(SOUNDS.reveal) : null;
-const audioExplode = SOUNDS.explode ? new Audio(SOUNDS.explode) : null;
-const audioWin = SOUNDS.win ? new Audio(SOUNDS.win) : null;
+var audioOpen = SOUNDS.open ? new Audio(SOUNDS.open) : null;
+var audioClose = SOUNDS.close ? new Audio(SOUNDS.close) : null;
+var audioReveal = SOUNDS.reveal ? new Audio(SOUNDS.reveal) : null;
+var audioExplode = SOUNDS.explode ? new Audio(SOUNDS.explode) : null;
+var audioWin = SOUNDS.win ? new Audio(SOUNDS.win) : null;
 
 function play(a){ try{ if(a){ a.currentTime=0; a.play(); }}catch(e){} }
 
-let rankingSortState = {
+var rankingSortState = {
   score: 1,
   time: 1,
   date: 1
 };
 
 export function init(){
-  const rankingBtn = document.getElementById('ranking-btn');
+  var rankingBtn = document.getElementById('ranking-btn');
   if (rankingBtn) rankingBtn.addEventListener('click', openRanking);
 
-  const closeRanking = document.getElementById('close-ranking');
+  var closeRanking = document.getElementById('close-ranking');
   if (closeRanking) closeRanking.addEventListener('click', closeRankingModal);
 
-  const sortScore = document.getElementById('sort-by-score'); 
-  if (sortScore) sortScore.addEventListener('click', ()=> sortRanking('score'));
+  var sortScore = document.getElementById('sort-by-score'); 
+  if (sortScore) sortScore.addEventListener('click', function() {sortRanking('score')});
 
-  const sortTime = document.getElementById('sort-by-time');
-  if (sortTime) sortTime.addEventListener('click', ()=> sortRanking('time'));
+  var sortTime = document.getElementById('sort-by-time');
+  if (sortTime) sortTime.addEventListener('click', function() {sortRanking('time')});
 
-  const sortDate = document.getElementById('sort-by-date');
-  if (sortDate) sortDate.addEventListener('click', ()=> sortRanking('date'));
+  var sortDate = document.getElementById('sort-by-date');
+  if (sortDate) sortDate.addEventListener('click', function() {sortRanking('date')});
 
-  const clearBtn = document.getElementById('clear-ranking');
-  if (clearBtn) clearBtn.addEventListener('click', ()=>{
+  var clearBtn = document.getElementById('clear-ranking');
+  if (clearBtn) clearBtn.addEventListener('click', function() {
     Storage.clearResults();
     openRanking();
   });
 
-  const themeBtn = document.getElementById('theme-btn');
+  var themeBtn = document.getElementById('theme-btn');
   if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
-  const ok = document.getElementById('result-ok');
-  const restart = document.getElementById('result-restart');
+  var ok = document.getElementById('result-ok');
+  var restart = document.getElementById('result-restart');
   if (ok) ok.addEventListener('click', hideResultModal);
-  if (restart) restart.addEventListener('click', ()=>{ hideResultModal(); window.location.reload(); });
+  if (restart) restart.addEventListener('click', function() { hideResultModal(); window.location.reload(); });
 
   loadAndApplySettings();
 }
 
 export function showNameModal(){
-  const m = document.getElementById('name-modal');
+  var m = document.getElementById('name-modal');
   if (m){ m.classList.remove('hidden'); play(audioOpen); }
 }
 export function hideNameModal(){
-  const m = document.getElementById('name-modal');
+  var m = document.getElementById('name-modal');
   if (m){ m.classList.add('hidden'); play(audioClose); }
 }
 
 export function showResultModal(title,message,isWin){
-  const modal = document.getElementById('result-modal');
+  var modal = document.getElementById('result-modal');
   if(!modal) return;
   document.getElementById('result-title').textContent = title;
   document.getElementById('result-message').textContent = message;
-  const icon = document.getElementById('result-icon');
+  var icon = document.getElementById('result-icon');
   if(icon) icon.src = isWin ? ICONS.face_happy : ICONS.crane;
 
   modal.classList.remove('hidden');
   play(isWin ? audioWin : audioExplode);
 }
 export function hideResultModal(){
-  const modal = document.getElementById('result-modal');
+  var modal = document.getElementById('result-modal');
   if(modal){ modal.classList.add('hidden'); play(audioClose); }
 }
 
 export function setFace(key){
-  const el = document.getElementById('face-icon');
+  var el = document.getElementById('face-icon');
   if(!el) return;
   if(key==='happy') el.src = ICONS.face_happy;
   if(key==='surprised') el.src = ICONS.face_surprised;
@@ -84,20 +84,20 @@ export function setFace(key){
 }
 
 export function setMinesRemaining(n){
-  const el = document.getElementById('mines-remaining');
+  var el = document.getElementById('mines-remaining');
   if(el) el.textContent = String(n);
 }
 export function setTimerText(sec){
-  const el = document.getElementById('timer');
+  var el = document.getElementById('timer');
   if(el) el.textContent = formatTime(sec);
 }
 
 export function openRanking(){
-  const modal = document.getElementById('ranking-modal');
-  const list = document.getElementById('ranking-list');
+  var modal = document.getElementById('ranking-modal');
+  var list = document.getElementById('ranking-list');
   list.innerHTML = '';
 
-  let arr = Storage.loadResults() || [];
+  var arr = Storage.loadResults() || [];
   if(!arr.length){
     list.innerHTML = '<p>No hay partidas guardadas</p>';
     modal.classList.remove('hidden');
@@ -120,10 +120,10 @@ export function openRanking(){
 }
 
 function renderRankingList(arr){
-  const list = document.getElementById('ranking-list');
+  var list = document.getElementById('ranking-list');
   list.innerHTML = '';
 
-  const header = document.createElement('div');
+  var header = document.createElement('div');
   header.className = 'row-item header';
   header.style.display = 'grid';
   header.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
@@ -139,7 +139,7 @@ function renderRankingList(arr){
   list.appendChild(header);
 
   arr.forEach(it=>{
-    const row = document.createElement('div');
+    var row = document.createElement('div');
     row.className = 'row-item';
     row.style.display = 'grid';
     row.style.gridTemplateColumns = '2fr 1fr 1fr 1fr';
@@ -230,20 +230,20 @@ export function sortRanking(key){
 
 
 function toggleTheme(){
-  const settings = Storage.loadSettings() || {};
-  const next = (settings.theme === 'light') ? 'dark' : 'light';
+  var settings = Storage.loadSettings() || {};
+  var next = (settings.theme === 'light') ? 'dark' : 'light';
   settings.theme = next;
   Storage.saveSettings(settings);
   loadAndApplySettings();
 }
 
 function loadAndApplySettings(){
-  const settings = Storage.loadSettings() || {};
-  const th = settings.theme || 'dark';
+  var settings = Storage.loadSettings() || {};
+  var th = settings.theme || 'dark';
   document.body.classList.toggle('light', th==='light');
 }
 
 function closeRankingModal(){
-  const m = document.getElementById('ranking-modal');
+  var m = document.getElementById('ranking-modal');
   if (m){ m.classList.add('hidden'); play(audioClose); }
 }

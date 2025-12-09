@@ -1,11 +1,11 @@
 'use strict';
-export const PRESETS = {
+export var PRESETS = {
   easy:  { rows: 8,  cols: 8,  mines: 10 },
   medium:{ rows: 12, cols: 12, mines: 25 },
   hard:  { rows: 16, cols: 16, mines: 40 }
 };
 
-export const ICONS = {
+export var ICONS = {
   flag: 'icons/red-flag.png',
   mine: 'icons/bomb.png',
   blast: 'icons/blast.png',
@@ -20,12 +20,12 @@ export const ICONS = {
   night: 'icons/moon.png'
 };
 
-export const SOUNDS = {
+export var SOUNDS = {
   open: 'sounds/open.mp3',
   close: 'sounds/close.mp3',
   reveal: 'sounds/flag.mp3',
   explode: 'sounds/boom.mp3',
   win: 'sounds/win-game.mp3',
-  click_1: 'sounds/click_1.mp3',
-  click_2: 'sounds/click_2.mp3'
+  click_1: 'sounds/click-1.mp3',
+  click_2: 'sounds/click-2.mp3'
 };
