@@ -33,4 +33,7 @@
 - Sonidos en eventos.
 - Contact page con validación.
 - Accesibilidad básica (focus, atajos).
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4afe6b5042ce83ad07614a55246b72f7e0165443
