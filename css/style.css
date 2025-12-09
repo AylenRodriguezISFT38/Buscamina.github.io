@@ -287,8 +287,13 @@
       font-size:16px; 
     }
     .modal-card{ 
-      width:82%; 
+      width:80%; 
+    
     }
+    .row-item {
+      gap: 0;
+    }
+
     .top-bar{ 
       flex-direction:column; 
       gap:10px; 
