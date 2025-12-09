@@ -449,8 +449,7 @@ body.light .modal .modal-contact textarea {
 }
 
 
-@media (max-width: 650px) {
-
+ @media (max-width: 650px) {
     .main {
         width: 100%;
         display: flex;
@@ -459,6 +458,7 @@ body.light .modal .modal-contact textarea {
         overflow: scroll;
     }
 
+
     .board-wrapper {
         width: fit-content;
         margin: 0 auto;
@@ -466,24 +466,42 @@ body.light .modal .modal-contact textarea {
     }
 
     .row {
-        justify-content: center; 
+        justify-content: center;
     }
+
 
     .cell {
         font-size: 16px;
         height: 30px;
         width: 30px;
     }
+
     .top-bar{
         display: flex;
         flex-direction: column;
         margin: 10px;
     }
-    
+
+     #ranking-list{
+        overflow: scroll;
+        width: 100%;
+    }
+    .modal-card {
+        width: 60%;
+    }
+
 }
+
 @media (max-width: 400px) {
+
     .mid-controls{
         display: flex;
         flex-direction: column;
     }
-}
+  #ranking-list{
+        overflow: scroll;
+    }
+    .modal-card {
+        width: 80%;
+    }
+} 
