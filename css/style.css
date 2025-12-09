@@ -6,7 +6,7 @@ body {
     flex-direction: column;
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
-    min-height: 100vh;
+ 
 }
 
 body.light {
@@ -68,6 +68,7 @@ body.light .top-bar {
 .light .btn {
     background: #e0e0e0;
     color: #222;
+    border: solid 1px #ccc;
 }
 
 .btn:hover {
@@ -150,17 +151,18 @@ body.light .cell:active {
     background: #e0e0e0;
 }
 
-.cell.revealed {
-    background: #dcdcdc;
+
+body.light  .cell.revealed {
+    background: #fafafa;
     border: 1px solid #bdbdbd;
     color: #222;
     cursor: default;
 }
 
-body.dark .cell.revealed {
-    background: #2f2f2f;
-    border-color: #555;
-    color: #eee;
+.cell.revealed {
+    background: #fafafa;
+    border-color: #2c2c2c;
+    color: #2c2c2c;
 }
 
 .cell.flagged {
@@ -186,10 +188,9 @@ body.light .cell.flagged {
     width: 22px;
 }
 
-/* --------------------------------------------------
-   MODAL GENERAL
--------------------------------------------------- */
-
+body.light #clear-ranking{
+    color: #fff;
+}
 .modal {
     align-items: center;
     background: #0A0A0AA6;
@@ -259,9 +260,6 @@ body.light .modal-card input {
     width: 28px;
 }
 
-/* --------------------------------------------------
-   RANKING
--------------------------------------------------- */
 
 #ranking-list {
     max-height: 260px;
@@ -308,9 +306,7 @@ body.light .modal-card input {
     text-align: center;
 }
 
-/* --------------------------------------------------
-   CONTACTO
--------------------------------------------------- */
+
 
 .modal .modal-contact {
     background: #272727;
@@ -453,30 +449,41 @@ body.light .modal .modal-contact textarea {
 }
 
 
+@media (max-width: 650px) {
 
-@media (max-width: 600px) {
+    .main {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: auto;
+        overflow: scroll;
+    }
+
+    .board-wrapper {
+        width: fit-content;
+        margin: 0 auto;
+        padding: 6px;
+    }
+
+    .row {
+        justify-content: center; 
+    }
+
     .cell {
         font-size: 16px;
         height: 30px;
         width: 30px;
     }
-
-    .modal-card {
-        width: 80%;
-    }
-
-    .row-item {
-        gap: 0;
-    }
-
-    .top-bar {
-        align-items: center;
+    .top-bar{
+        display: flex;
         flex-direction: column;
-        gap: 10px;
+        margin: 10px;
     }
-
-    .modal .modal-contact {
-        padding: 16px;
-        width: 92%;
+    
+}
+@media (max-width: 400px) {
+    .mid-controls{
+        display: flex;
+        flex-direction: column;
     }
 }

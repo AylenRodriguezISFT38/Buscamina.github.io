@@ -214,6 +214,7 @@ export function sortRanking(key){
     }
 
     if (key === 'time') {
+      console.log('sorting by time', a.time, b.time, rankingSortState.time);
       return rankingSortState.time * (a.time - b.time);
     }
 

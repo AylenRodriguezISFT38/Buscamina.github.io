@@ -114,8 +114,8 @@ function renderBoard() {
       cell.addEventListener('mouseup', function(e){ setTimeout(function(){ if (!ended) UI.setFace('happy'); }, 120); if (e.button === 0) leftAction(r,c); });
       cell.addEventListener('contextmenu', function(e){ e.preventDefault(); toggleFlag(r,c); return false; });
 
-      let touchTimer = null;
-      let touchMoved = false;
+      var touchTimer = null;
+      var touchMoved = false;
 
       cell.addEventListener('touchstart', (ev) => {
         touchMoved = false;
@@ -153,7 +153,7 @@ function handleChord(r, c) {
   var val = board.grid[r][c];
   if (typeof val !== 'number' || val <= 0) return;
 
-  let flags = 0;
+  var flags = 0;
   var neigh = [];
   for (let dr = -1; dr <= 1; dr++) {
     for (let dc = -1; dc <= 1; dc++) {
@@ -233,10 +233,10 @@ function updateDOMForResults(results) {
 }
 
 function calculateScoreOnWin() {
-  let revealedCount = 0;
+  var revealedCount = 0;
   for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if (board.revealed[r][c]) revealedCount++;
 
-  let correctFlags = 0, incorrectFlags = 0;
+  var correctFlags = 0, incorrectFlags = 0;
   for (let r=0;r<rows;r++){
     for (let c=0;c<cols;c++){
       if (board.flagged[r][c]) {
@@ -250,18 +250,17 @@ function calculateScoreOnWin() {
   var base = revealedCount * 10;
   var flagsBonus = correctFlags * 50;
   var flagsPenalty = incorrectFlags * 20;
-  var timeBonus = Math.floor((mines / t) * 500); // minas / tiempo * factor
+  var timeBonus = Math.floor((mines / t) * 500); 
 
   var raw = base + flagsBonus - flagsPenalty + timeBonus;
   return Math.max(0, Math.floor(raw));
 }
 
 function calculateScoreOnLoss() {
-  // similar but penalizado por no completar
-  let revealedCount = 0;
+  var revealedCount = 0;
   for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if (board.revealed[r][c]) revealedCount++;
 
-  let correctFlags = 0, incorrectFlags = 0;
+  var correctFlags = 0, incorrectFlags = 0;
   for (let r=0;r<rows;r++){
     for (let c=0;c<cols;c++){
       if (board.flagged[r][c]) {
@@ -272,7 +271,7 @@ function calculateScoreOnLoss() {
   }
 
   var t = Math.max(1, seconds);
-  var base = Math.floor(revealedCount * 5); // less weight on loss
+  var base = Math.floor(revealedCount * 5); 
   var flagsBonus = Math.floor(correctFlags * 25);
   var flagsPenalty = Math.floor(incorrectFlags * 30);
   var timeBonus = Math.floor((mines / t) * 100);
@@ -309,7 +308,7 @@ function playExplodeAndEnd(r,c) {
 
 function checkWin() {
   var safe = 0;
-  for (var r=0;r<rows;r++) for (var c=0;c<cols;c++) if (board.grid[r][c] !== 'M' && board.revealed[r][c]) safe++;
+  for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if (board.grid[r][c] !== 'M' && board.revealed[r][c]) safe++;
   if (safe === (rows*cols - mines)) {
     ended = true; stopTimer();
     UI.setFace('happy');
