@@ -93,6 +93,7 @@ body.light .top-bar {
 }
 
 .main button {
+    align-self: center;
     margin-bottom: 12px;
 }
 
@@ -450,6 +451,9 @@ body.light .modal .modal-contact textarea {
 
 
  @media (max-width: 650px) {
+    #sort-rank button{
+        height: 50%;
+    }
     .main {
         width: 100%;
         display: flex;
@@ -458,6 +462,7 @@ body.light .modal .modal-contact textarea {
         overflow: scroll;
         margin: auto;
     }
+
 
     .board-wrapper {
         width: fit-content;
@@ -483,7 +488,7 @@ body.light .modal .modal-contact textarea {
     }
 
      #ranking-list{
-        overflow-x: scroll;
+        overflow: scroll;
         width: 100%;
     }
     .modal-card {
@@ -499,7 +504,7 @@ body.light .modal .modal-contact textarea {
         flex-direction: column;
     }
   #ranking-list{
-        overflow-x: scroll;
+        overflow: scroll;
     }
     .modal-card {
         width: 80%;
